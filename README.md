@@ -107,10 +107,10 @@ git clone --recursive https://github.com/ziyc/drivestudio.git
 cd drivestudio
 
 # Create the environment
-conda create -n drivestudio python=3.9 -y
+conda create -n drivestudio python=3.12 -y
 conda activate drivestudio
+pip install torch==2.8.0 torchvision==0.23.0 torchaudio==2.8.0 --index-url https://download.pytorch.org/whl/cu129
 pip install -r requirements.txt
-pip install git+https://github.com/nerfstudio-project/gsplat.git@v1.3.0
 pip install git+https://github.com/facebookresearch/pytorch3d.git
 pip install git+https://github.com/NVlabs/nvdiffrast
 

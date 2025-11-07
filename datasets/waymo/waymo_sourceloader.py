@@ -379,7 +379,7 @@ class WaymoLiDARSource(SceneLidarSource):
         """
         origins, directions, ranges, laser_ids = [], [], [], []
         # flow/ground info are used for evaluation only
-        flows, flow_classes, grounds = [], [], []
+        grounds = []
         # in waymo, we simplify timestamps as the time indices
         timesteps = []
 
@@ -388,29 +388,27 @@ class WaymoLiDARSource(SceneLidarSource):
         for t in trange(
             0, len(self.lidar_filepaths), desc="Loading lidar", dynamic_ncols=True
         ):
-            # each lidar_info contains an Nx14 array
+            # each lidar_info contains an Nx10 array
             # from left to right:
-            # origins: 3d, points: 3d, flows: 3d, flow_class: 1d,
+            # origins: 3d, points: 3d, 
             # ground_labels: 1d, intensities: 1d, elongations: 1d, laser_ids: 1d
             lidar_info = np.memmap(
                 self.lidar_filepaths[t],
                 dtype=np.float32,
                 mode="r",
-            ).reshape(-1, 14)
+            ).reshape(-1, 10)
             original_length = len(lidar_info)
             accumulated_num_original_rays += original_length
 
             # select lidar points based on the laser id
             if self.data_cfg.only_use_top_lidar:
                 # laser_ids: 0: TOP, 1: FRONT, 2: SIDE_LEFT, 3: SIDE_RIGHT, 4: REAR
-                lidar_info = lidar_info[lidar_info[:, 13] == 0]
+                lidar_info = lidar_info[lidar_info[:, 9] == 0]
 
             lidar_origins = torch.from_numpy(lidar_info[:, :3]).float()
             lidar_points = torch.from_numpy(lidar_info[:, 3:6]).float()
-            lidar_ids = torch.from_numpy(lidar_info[:, 13]).float()
-            lidar_flows = torch.from_numpy(lidar_info[:, 6:9]).float()
-            lidar_flow_classes = torch.from_numpy(lidar_info[:, 9]).long()
-            ground_labels = torch.from_numpy(lidar_info[:, 10]).long()
+            lidar_ids = torch.from_numpy(lidar_info[:, 9]).float()
+            ground_labels = torch.from_numpy(lidar_info[:, 6]).long()
             # we don't collect intensities and elongations for now
 
             # select lidar points based on a truncated ego-forward-directional range
@@ -425,8 +423,6 @@ class WaymoLiDARSource(SceneLidarSource):
             lidar_origins = lidar_origins[valid_mask]
             lidar_points = lidar_points[valid_mask]
             lidar_ids = lidar_ids[valid_mask]
-            lidar_flows = lidar_flows[valid_mask]
-            lidar_flow_classes = lidar_flow_classes[valid_mask]
             ground_labels = ground_labels[valid_mask]
             # transform lidar points from lidar coordinate system to world coordinate system
             lidar_origins = (
@@ -438,7 +434,6 @@ class WaymoLiDARSource(SceneLidarSource):
                 + self.lidar_to_worlds[t][:3, 3:4]
             ).T
             # scene flows are in the lidar coordinate system, so we need to rotate them
-            lidar_flows = (self.lidar_to_worlds[t][:3, :3] @ lidar_flows.T).T
             # compute lidar directions
             lidar_directions = lidar_points - lidar_origins
             lidar_ranges = torch.norm(lidar_directions, dim=-1, keepdim=True)
@@ -451,8 +446,6 @@ class WaymoLiDARSource(SceneLidarSource):
             directions.append(lidar_directions)
             ranges.append(lidar_ranges)
             laser_ids.append(lidar_ids)
-            flows.append(lidar_flows)
-            flow_classes.append(lidar_flow_classes)
             grounds.append(ground_labels)
             # we use time indices as the timestamp for waymo dataset
             timesteps.append(lidar_timestamp)
@@ -473,11 +466,6 @@ class WaymoLiDARSource(SceneLidarSource):
         self.laser_ids = torch.cat(laser_ids, dim=0)
         self.visible_masks = torch.zeros_like(self.ranges).squeeze().bool()
         self.colors = torch.ones_like(self.directions)
-        # becasue the flows here are velocities (m/s), and the fps of the lidar is 10,
-        # we need to divide the velocities by 10 to get the displacements/flows
-        # between two consecutive lidar scans
-        self.flows = torch.cat(flows, dim=0) / 10.0
-        self.flow_classes = torch.cat(flow_classes, dim=0)
         self.grounds = torch.cat(grounds, dim=0).bool()
 
         # the underscore here is important.
@@ -486,8 +474,6 @@ class WaymoLiDARSource(SceneLidarSource):
 
     def to(self, device: torch.device):
         super().to(device)
-        self.flows = self.flows.to(device)
-        self.flow_classes = self.flow_classes.to(device)
         self.grounds = self.grounds.to(self.device)
 
     def get_lidar_rays(self, time_idx: int) -> Dict[str, Tensor]:
@@ -502,14 +488,12 @@ class WaymoLiDARSource(SceneLidarSource):
         directions = self.directions[self.timesteps == time_idx]
         ranges = self.ranges[self.timesteps == time_idx]
         normalized_time = self.normalized_time[self.timesteps == time_idx]
-        flows = self.flows[self.timesteps == time_idx]
         return {
             "lidar_origins": origins,
             "lidar_viewdirs": directions,
             "lidar_ranges": ranges,
             "lidar_normed_time": normalized_time,
             "lidar_mask": self.timesteps == time_idx,
-            "lidar_flows": flows,
         }
 
     def delete_invisible_pts(self) -> None:
@@ -521,7 +505,6 @@ class WaymoLiDARSource(SceneLidarSource):
             self.origins = self.origins[self.visible_masks]
             self.directions = self.directions[self.visible_masks]
             self.ranges = self.ranges[self.visible_masks]
-            self.flows = self.flows[self.visible_masks]
             self._timesteps = self._timesteps[self.visible_masks]
             self._normalized_time = self._normalized_time[self.visible_masks]
             self.colors = self.colors[self.visible_masks]

@@ -5,7 +5,7 @@ This guide details the process of extracting body poses of pedestrians in variou
 :warning: To utilize the SMPL-Gaussians to model pedestrians, please first download the SMPL models.
 
 1. Download SMPL v1.1 (`SMPL_python_v.1.1.0.zip`) from the [SMPL official website](https://smpl.is.tue.mpg.de/download.php)
-2. Move `SMPL_python_v.1.1.0/smpl/models/basicmodel_neutral_lbs_10_207_0_v1.1.0.pkl` to `PROJECT_ROOT/smpl_models/SMPL_NEUTRAL.pkl`
+2. copy `SMPL_python_v.1.1.0/smpl/models/basicmodel_neutral_lbs_10_207_0_v1.1.0.pkl` to `<drivestudio>/data/basicmodel_neutral_lbs_10_207_0_v1.1.0.pkl` and `~/.cache/phalp/3D/models/smpl/SMPL_NEUTRAL.pkl`
 
 ## Obtaining Human Body Pose Data
 
@@ -49,25 +49,20 @@ Supported datasets for human body pose extraction:
 
 **1. Update submodules and set up the environment:**
    ```bash
-   # Update submodules
-   git submodule update --init --recursive
-
-   # Create and activate the environment
-   conda create --name 4D-humans python=3.10 -y
-   conda activate 4D-humans
-
-   # Install PyTorch
-   pip install torch
+   conda activate drivestudio
 
    # Install 4D-Humans
    cd third_party/Humans4D
    pip install -e .[all]
 
    # Install additional dependencies
-   pip install git+https://github.com/brjathu/PHALP.git
-   pip install git+https://github.com/facebookresearch/pytorch3d.git
+   # install nurual render pytorch
+   cd ../NMR
+   pip install . --no-build-isolation
 
-   # Return to the project root
+   # install phalp
+   cd ../PHALP
+   pip install -e .
    cd ../..
    ```
 
@@ -83,7 +78,7 @@ Supported datasets for human body pose extraction:
 
    **Waymo**
    ```bash
-   conda activate 4D-humans
+   conda activate drivestudio
 
    python datasets/tools/humanpose_process.py \
    --dataset waymo \
@@ -94,7 +89,7 @@ Supported datasets for human body pose extraction:
 
    **PandaSet**
    ```bash
-   conda activate 4D-humans
+   conda activate drivestudio
 
    python datasets/tools/humanpose_process.py \
    --dataset pandaset \
@@ -105,7 +100,7 @@ Supported datasets for human body pose extraction:
 
    **ArgoVerse2**
    ```bash
-   conda activate 4D-humans
+   conda activate drivestudio
 
    python datasets/tools/humanpose_process.py \
    --dataset argoverse \
@@ -116,7 +111,7 @@ Supported datasets for human body pose extraction:
 
    **NuScenes**
    ```bash
-   conda activate 4D-humans
+   conda activate drivestudio
 
    python datasets/tools/humanpose_process.py \
    --dataset nuscenes \
@@ -127,7 +122,7 @@ Supported datasets for human body pose extraction:
 
    **KITTI**
    ```bash
-   conda activate 4D-humans
+   conda activate drivestudio
 
    python datasets/tools/humanpose_process.py \
    --dataset kitti \
@@ -138,7 +133,7 @@ Supported datasets for human body pose extraction:
 
    **NuPlan**
    ```bash
-   conda activate 4D-humans
+   conda activate drivestudio
 
    python datasets/tools/humanpose_process.py \
    --dataset nuplan \

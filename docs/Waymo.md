@@ -54,6 +54,9 @@ After downloading the raw dataset, you'll need to preprocess this compressed dat
 
 #### Install Waymo Development Toolkit
 ```shell
+# install cuda-11-8 and set CUDA_HOME and path first
+conda create -n waymo python=3.10
+conda activate waymo
 pip install waymo-open-dataset-tf-2-11-0==1.6.0
 ```
 

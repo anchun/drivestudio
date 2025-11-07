@@ -4,6 +4,8 @@ import joblib
 import logging
 import argparse
 import numpy as np
+import sys
+sys.path.append(os.getcwd())
 
 from datasets.tools.extract_smpl import run_4DHumans
 from datasets.tools.postprocess import match_and_postprocess

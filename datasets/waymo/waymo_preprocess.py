@@ -302,13 +302,13 @@ class WaymoProcessor(object):
         #   2: pedestrian, i.e., the point corresponds to a pedestrian label box.
         #   3: sign, i.e., the point corresponds to a sign label box.
         #   4: cyclist, i.e., the point corresponds to a cyclist label box.
-        flows = np.concatenate(flows, axis=0)
+        #flows = np.concatenate(flows, axis=0)
 
         point_cloud = np.column_stack(
             (
                 origins,
                 points,
-                flows,
+                #flows,
                 ground_label,
                 intensity,
                 elongation,

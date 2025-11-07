@@ -316,7 +316,7 @@ def convert_range_image_to_point_cloud_flow(
     )
     for c in calibrations:
         range_image = range_images[c.name][ri_index]
-        range_image_flow = range_images_flow[c.name][ri_index]
+        #range_image_flow = range_images_flow[c.name][ri_index]
         if len(c.beam_inclinations) == 0:  # pylint: disable=g-explicit-length-test
             beam_inclinations = range_image_utils.compute_inclination(
                 tf.constant([c.beam_inclination_min, c.beam_inclination_max]),
@@ -331,9 +331,9 @@ def convert_range_image_to_point_cloud_flow(
         range_image_tensor = tf.reshape(
             tf.convert_to_tensor(range_image.data), range_image.shape.dims
         )
-        range_image_flow_tensor = tf.reshape(
-            tf.convert_to_tensor(range_image_flow.data), range_image_flow.shape.dims
-        )
+        # range_image_flow_tensor = tf.reshape(
+        #     tf.convert_to_tensor(range_image_flow.data), range_image_flow.shape.dims
+        # )
         pixel_pose_local = None
         frame_pose_local = None
         if c.name == dataset_pb2.LaserName.TOP:
@@ -344,10 +344,10 @@ def convert_range_image_to_point_cloud_flow(
         range_image_intensity = range_image_tensor[..., 1]
         range_image_elongation = range_image_tensor[..., 2]
 
-        flow_x = range_image_flow_tensor[..., 0]
-        flow_y = range_image_flow_tensor[..., 1]
-        flow_z = range_image_flow_tensor[..., 2]
-        flow_class = range_image_flow_tensor[..., 3]
+        #flow_x = range_image_flow_tensor[..., 0]
+        #flow_y = range_image_flow_tensor[..., 1]
+        #flow_z = range_image_flow_tensor[..., 2]
+        #flow_class = range_image_flow_tensor[..., 3]
 
         mask_index = tf.where(range_image_mask)
 
@@ -367,12 +367,12 @@ def convert_range_image_to_point_cloud_flow(
         points_intensity_tensor = tf.gather_nd(range_image_intensity, mask_index)
         points_elongation_tensor = tf.gather_nd(range_image_elongation, mask_index)
 
-        points_flow_x_tensor = tf.expand_dims(tf.gather_nd(flow_x, mask_index), axis=1)
-        points_flow_y_tensor = tf.expand_dims(tf.gather_nd(flow_y, mask_index), axis=1)
-        points_flow_z_tensor = tf.expand_dims(tf.gather_nd(flow_z, mask_index), axis=1)
-        points_flow_class_tensor = tf.expand_dims(
-            tf.gather_nd(flow_class, mask_index), axis=1
-        )
+        # points_flow_x_tensor = tf.expand_dims(tf.gather_nd(flow_x, mask_index), axis=1)
+        # points_flow_y_tensor = tf.expand_dims(tf.gather_nd(flow_y, mask_index), axis=1)
+        # points_flow_z_tensor = tf.expand_dims(tf.gather_nd(flow_z, mask_index), axis=1)
+        # points_flow_class_tensor = tf.expand_dims(
+        #     tf.gather_nd(flow_class, mask_index), axis=1
+        # )
 
         origins.append(origins_tensor.numpy())
         points.append(points_tensor.numpy())
@@ -380,17 +380,17 @@ def convert_range_image_to_point_cloud_flow(
         points_elongation.append(points_elongation_tensor.numpy())
         laser_ids.append(np.full_like(points_intensity_tensor.numpy(), c.name - 1))
 
-        points_flow.append(
-            tf.concat(
-                [
-                    points_flow_x_tensor,
-                    points_flow_y_tensor,
-                    points_flow_z_tensor,
-                    points_flow_class_tensor,
-                ],
-                axis=-1,
-            ).numpy()
-        )
+        # points_flow.append(
+        #     tf.concat(
+        #         [
+        #             points_flow_x_tensor,
+        #             points_flow_y_tensor,
+        #             points_flow_z_tensor,
+        #             points_flow_class_tensor,
+        #         ],
+        #         axis=-1,
+        #     ).numpy()
+        # )
 
     return (
         origins,
