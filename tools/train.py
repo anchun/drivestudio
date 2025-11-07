@@ -7,9 +7,12 @@ import random
 import imageio
 import logging
 import argparse
+import sys
+sys.path.append(os.getcwd())
+print(sys.path)
 
 import torch
-from tools.eval import do_evaluation
+from eval import do_evaluation
 from utils.misc import import_str
 from utils.backup import backup_project
 from utils.logging import MetricLogger, setup_logging

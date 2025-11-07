@@ -5,7 +5,7 @@ This guide details the process of extracting body poses of pedestrians in variou
 :warning: To utilize the SMPL-Gaussians to model pedestrians, please first download the SMPL models.
 
 1. Download SMPL v1.1 (`SMPL_python_v.1.1.0.zip`) from the [SMPL official website](https://smpl.is.tue.mpg.de/download.php)
-2. copy `SMPL_python_v.1.1.0/smpl/models/basicmodel_neutral_lbs_10_207_0_v1.1.0.pkl` to `<drivestudio>/data/basicmodel_neutral_lbs_10_207_0_v1.1.0.pkl` and `~/.cache/phalp/3D/models/smpl/SMPL_NEUTRAL.pkl`
+2. copy `SMPL_python_v.1.1.0/smpl/models/basicmodel_neutral_lbs_10_207_0_v1.1.0.pkl` to `PROJECT_ROOT/smpl_models/SMPL_NEUTRAL.pkl` and `~/.cache/phalp/3D/models/smpl/SMPL_NEUTRAL.pkl`
 
 ## Obtaining Human Body Pose Data
 

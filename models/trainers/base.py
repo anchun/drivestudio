@@ -277,7 +277,7 @@ class BasicTrainer(nn.Module):
             self.tic = time.time()
         
     def postprocess_per_train_step(self, step: int) -> None:
-        radii = self.info["radii"]
+        radii = self.info["radii"].squeeze(0).max(dim=1).values
         if self.render_cfg.absgrad:
             grads = self.info["means2d"].absgrad.clone()
         else:
@@ -291,7 +291,7 @@ class BasicTrainer(nn.Module):
             self.models[class_name].postprocess_per_train_step(
                 step=step,
                 optimizer=self.optimizer,
-                radii=radii[0, gaussian_mask],
+                radii=radii[gaussian_mask],
                 xys_grad=grads[0, gaussian_mask],
                 last_size=max(self.info["width"], self.info["height"])
             )
@@ -310,9 +310,10 @@ class BasicTrainer(nn.Module):
             self.viewer.update(step, num_train_rays_per_step)
     
     def update_visibility_filter(self) -> None:
+        radii = self.info["radii"].squeeze(0).max(dim=1).values
         for class_name in self.gaussian_classes.keys():
             gaussian_mask = self.pts_labels == self.gaussian_classes[class_name]
-            self.models[class_name].cur_radii = self.info["radii"][0, gaussian_mask]
+            self.models[class_name].cur_radii = radii[gaussian_mask]
 
     def process_camera(
         self,
