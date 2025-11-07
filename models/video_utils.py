@@ -22,8 +22,8 @@ logger = logging.getLogger()
 def get_numpy(x: Tensor) -> np.ndarray:
     return x.squeeze().cpu().numpy()
 
-def non_zero_mean(x: Tensor) -> float:
-    return sum(x) / len(x) if len(x) > 0 else -1
+def non_zero_mean(x) -> float:
+    return float(sum(x) / len(x)) if len(x) > 0 else -1
 
 def compute_psnr(prediction: Tensor, target: Tensor) -> float:
     """

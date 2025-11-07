@@ -28,6 +28,7 @@ class SMPLNodes(RigidNodes):
         # overide here, because we use only one dimension for scale
         if self.ball_gaussians:
             self._scales = torch.zeros(1, 1, device=self.device)
+        self.nn_ind = None
         
     @property
     def num_instances(self):
@@ -460,7 +461,7 @@ class SMPLNodes(RigidNodes):
         
         # knn regularization
         knn_reg = self.reg_cfg.get("knn_reg", None)
-        if knn_reg is not None:
+        if knn_reg is not None and self.nn_ind is not None:
             K = self.ctrl_cfg.knn_neighbors
             instances_mask = self.instances_fv[self.cur_frame]
             nn_ind = self.nn_ind[instances_mask] # (num_instances, smpl_points_num, knn_neighbors)
