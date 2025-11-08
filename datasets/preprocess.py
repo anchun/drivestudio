@@ -1,5 +1,8 @@
 import argparse
+import os
 import numpy as np
+import sys
+sys.path.append(os.getcwd())
 
 if __name__ == "__main__":
     """

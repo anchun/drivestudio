@@ -6,6 +6,8 @@ import json
 import wandb
 import logging
 import argparse
+import sys
+sys.path.append(os.getcwd())
 
 import torch
 from datasets.driving_dataset import DrivingDataset
@@ -98,6 +100,7 @@ def do_evaluation(
             dataset=dataset.full_image_set,
             compute_metrics=True,
             compute_error_map=cfg.render.vis_error,
+            render_keys=render_keys,
         )
         
         if log_metrics:
@@ -247,7 +250,7 @@ def main(args):
         time.sleep(1000000)
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser("Train Gaussian Splatting for a single scene")    
+    parser = argparse.ArgumentParser("Eval Gaussian Splatting for a single scene")    
     # eval
     parser.add_argument("--resume_from", default=None, help="path to checkpoint to resume from", type=str, required=True)
     parser.add_argument("--render_video_postfix", type=str, default=None, help="an optional postfix for video")    

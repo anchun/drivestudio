@@ -9,7 +9,6 @@ import logging
 import argparse
 import sys
 sys.path.append(os.getcwd())
-print(sys.path)
 
 import torch
 from eval import do_evaluation

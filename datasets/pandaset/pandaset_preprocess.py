@@ -555,8 +555,8 @@ class PandaSetProcessor(object):
                 # The heading of the bounding box (in radians).  The heading is the angle
                 #   required to rotate +x to the surface normal of the box front face. It is
                 #   normalized to [-pi, pi).
-                c = np.math.cos(row["yaw"])
-                s = np.math.sin(row["yaw"])
+                c = np.cos(row["yaw"])
+                s = np.sin(row["yaw"])
                 
                 # [object to  world] transformation matrix
                 o2w = np.array([

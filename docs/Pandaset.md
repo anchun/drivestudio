@@ -42,6 +42,7 @@ Due to reported [issues](https://github.com/scaleapi/pandaset-devkit/issues/151)
 Install the modified PandaSet development toolkit:
 
 ```shell
+conda activate drivestudio
 git clone https://github.com/ziyc/pandaset-devkit.git
 cd pandaset-devkit/python
 pip install -e .
