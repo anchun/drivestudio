@@ -45,6 +45,9 @@ To install the development toolkit, we follow the [official setup instructions](
    
     # Download the dataset using s5cmd
     s5cmd --no-sign-request cp "s3://argoverse/datasets/av2/$DATASET_NAME/*" $TARGET_DIR
+
+    # download specific scenario
+    s5cmd --no-sign-request cp "s3://argoverse/datasets/av2/sensor/train/00a6ffc1-*" "$TARGET_DIR/train/"
    ```
 
 ## 3. Process the Data
