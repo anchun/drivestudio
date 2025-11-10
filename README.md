@@ -118,6 +118,20 @@ pip install git+https://github.com/NVlabs/nvdiffrast
 cd third_party/smplx/
 pip install -e .
 cd ../..
+
+# Install 4D-Humans
+cd third_party/Humans4D
+pip install -e .[all]
+
+# Install additional dependencies
+# install nurual render pytorch
+cd ../NMR
+pip install . --no-build-isolation
+
+# install phalp
+cd ../PHALP
+pip install -e .
+cd ../..
 ```
 
 ## 📊 Prepare Data
