@@ -103,7 +103,7 @@ Run the following commands to set up the environment:
 
 ```shell
 # Clone the repository with submodules
-git clone --recursive https://github.com/ziyc/drivestudio.git
+git clone --recursive https://github.com/anchun/drivestudio.git
 cd drivestudio
 
 # Create the environment
@@ -147,19 +147,15 @@ We support most popular public driving datasets. Detailed instructions for downl
 ## 🚀 Running
 ### Training
 ```shell
-export PYTHONPATH=$(pwd)
-start_timestep=0 # start frame index for training
-end_timestep=-1 # end frame index, -1 for the last frame
+scene_idx=003
 
 python tools/train.py \
     --config_file configs/omnire.yaml \
-    --output_root $output_root \
-    --project $project \
-    --run_name $expname \
-    dataset=waymo/3cams \
-    data.scene_idx=$scene_idx \
-    data.start_timestep=$start_timestep \
-    data.end_timestep=$end_timestep
+    --output_root output/omnire_pandaset \
+    --project 6cams \
+    --run_name $scene_idx \
+    dataset=waymo/6cams \
+    data.scene_idx=$scene_idx
 ```
 
 - To run other methods, change `--config_file`. See `configs/` for more options.
